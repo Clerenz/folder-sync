@@ -8,6 +8,10 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The front end somewhat. Read the properties files, create the sync instances
+ * and run. Simply replace this class with a UI and get a great application.
+ */
 public class Main {
 
 	private static final Logger logger = LogManager.getLogger(Main.class);
@@ -42,8 +46,9 @@ public class Main {
 		config.setCompareSize(compareSize);
 		String filenameFilter = prop.getProperty("filenameFilter", "");
 		String pathFilter = prop.getProperty("pathFilter", "");
-		config.setFilter(filenameFilter.split(pathSep), pathFilter.split(pathSep));
-		
+		String extensionFilter = prop.getProperty("extensionFilter", "");
+		config.setFilter(filenameFilter.split(pathSep), pathFilter.split(pathSep), extensionFilter.split(pathSep));
+
 		for (int i = 1; i < 100; i++) {
 			String target = prop.getProperty("target." + i);
 			String sourceString = prop.getProperty("source." + i);

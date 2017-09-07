@@ -7,6 +7,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The sync engine.
+ */
 public class Sync {
 
 	public static final String SLASH = "/";
@@ -36,7 +39,7 @@ public class Sync {
 		}
 	}
 
-	void resursiveSync(Target t, String file) throws IOException {
+	private void resursiveSync(Target t, String file) throws IOException {
 
 		File source = new File(t.getSource() + (file.equals("") ? "" : SLASH + file));
 		File target = new File(t.getTarget() + (file.equals("") ? "" : SLASH + file));

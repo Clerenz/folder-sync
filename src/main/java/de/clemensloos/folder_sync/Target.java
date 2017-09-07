@@ -3,6 +3,9 @@ package de.clemensloos.folder_sync;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Target is the combination of one source and one target folder.
+ */
 public class Target {
 
 	private String source;
@@ -115,7 +118,7 @@ public class Target {
 	}
 
 	public void log() {
-//		System.out.print("  > " + (filesAdded.get() + filesUpdated.get() + filesOkay.get()) + "/" + filesTotal + "\r");
+		System.out.print("  > " + (filesAdded.get() + filesUpdated.get() + filesOkay.get()) + "/" + filesTotal + "\r");
 	}
 
 }

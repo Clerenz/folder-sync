@@ -5,6 +5,10 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The global SyncConfig contains one or more targets. One instance is usually
+ * represented by one config file.
+ */
 public class SyncConfig {
 
 	private boolean compareSize = false;
@@ -42,10 +46,10 @@ public class SyncConfig {
 		this.targetList.add(target);
 	}
 
-	public void setFilter(String[] filenameFilterString, String[] pathFilterString) {
-		this.filenameFilter = new MyFilenameFilter(filenameFilterString, pathFilterString);
+	public void setFilter(String[] filenameFilterString, String[] pathFilterString, String[] extensionFilterString) {
+		this.filenameFilter = new MyFilenameFilter(filenameFilterString, pathFilterString, extensionFilterString);
 	}
-	
+
 	public FilenameFilter getFilenameFilter() {
 		return this.filenameFilter;
 	}
@@ -54,12 +58,14 @@ public class SyncConfig {
 
 		private String[] filenameFilterString;
 		private String[] pathFilterString;
-		
-		public MyFilenameFilter(String[] filenameFilterString, String[] pathFilterString) {
+		private String[] extensionFilterString;
+
+		public MyFilenameFilter(String[] filenameFilterString, String[] pathFilterString, String[] extensionFilterString) {
 			this.filenameFilterString = filenameFilterString;
 			this.pathFilterString = pathFilterString;
+			this.extensionFilterString = extensionFilterString;
 		}
-		
+
 		@Override
 		public boolean accept(File dir, String name) {
 			for (String s : filenameFilterString) {
@@ -69,6 +75,11 @@ public class SyncConfig {
 			}
 			for (String s : pathFilterString) {
 				if ((dir.getAbsolutePath() + Sync.SLASH + name).contains(s)) {
+					return false;
+				}
+			}
+			for (String s : extensionFilterString) {
+				if (name.contains(".") && name.substring(name.lastIndexOf(".") + 1).equalsIgnoreCase(s)) {
 					return false;
 				}
 			}

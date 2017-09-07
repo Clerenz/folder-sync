@@ -1,5 +1,8 @@
 package de.clemensloos.folder_sync;
 
+/**
+ * My own exception. Great.
+ */
 public class SyncException extends Exception {
 
 	private static final long serialVersionUID = -4224258588015236273L;
