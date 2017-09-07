@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorinterval="30" strict="true">
+	<Properties>
+		<Property name="filename">log/folder-sync.log</Property>
+	</Properties>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n" />
+		</Console>
+		<RollingFile name="RollingFile" fileName="logs/folder-sync.log"
+			filePattern="logs/folder-sync.%i.log">
+			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="1 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" level="INFO" />
+			<AppenderRef ref="RollingFile" level="DEBUG" />
+		</Root>
+	</Loggers>
+</Configuration>
