@@ -42,8 +42,10 @@ public class Main {
 		SyncConfig config = new SyncConfig();
 		boolean compareSize = Boolean.valueOf(prop.getProperty("compareSize", "false"));
 		boolean compareChecksum = Boolean.valueOf(prop.getProperty("compareChecksum", "false"));
+		boolean random = Boolean.valueOf(prop.getProperty("random", "false"));
 		config.setCompareChecksum(compareChecksum);
 		config.setCompareSize(compareSize);
+		config.setRandom(random);
 		String filenameFilter = prop.getProperty("filenameFilter", "");
 		String pathFilter = prop.getProperty("pathFilter", "");
 		String extensionFilter = prop.getProperty("extensionFilter", "");

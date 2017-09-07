@@ -2,6 +2,9 @@ package de.clemensloos.folder_sync;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -106,10 +109,18 @@ public class Sync {
 		// Handle directory
 		if (source.isDirectory()) {
 			if (target.exists() && target.isDirectory()) {
-				for (String child : source.list(config.getFilenameFilter())) {
+				List<String> sourceChildList = Arrays.asList(source.list(config.getFilenameFilter()));
+				if (config.isRandom()) {
+					Collections.shuffle(sourceChildList);
+				}
+				for (String child : sourceChildList) {
 					resursiveSync(t, file + SLASH + child);
 				}
-				for (String child : target.list()) {
+				List<String> targetChildList = Arrays.asList(target.list());
+				if (config.isRandom()) {
+					Collections.shuffle(targetChildList);
+				}
+				for (String child : targetChildList) {
 					if (!new File(source, child).exists() || !config.getFilenameFilter().accept(target, child)) {
 						log.debug("Delete obsolete file " + file + SLASH + child);
 						if (new File(target, child).isDirectory()) {

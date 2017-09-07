@@ -13,6 +13,7 @@ public class SyncConfig {
 
 	private boolean compareSize = false;
 	private boolean compareChecksum = false;
+	private boolean random = true;
 
 	private FilenameFilter filenameFilter;
 
@@ -32,6 +33,14 @@ public class SyncConfig {
 
 	public void setCompareChecksum(boolean compareChecksum) {
 		this.compareChecksum = compareChecksum;
+	}
+	
+	public boolean isRandom() {
+		return random;
+	}
+	
+	public void setRandom(boolean random) {
+		this.random = random;
 	}
 
 	public List<Target> getTargetList() {
