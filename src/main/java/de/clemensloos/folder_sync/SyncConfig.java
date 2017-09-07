@@ -69,17 +69,17 @@ public class SyncConfig {
 		@Override
 		public boolean accept(File dir, String name) {
 			for (String s : filenameFilterString) {
-				if (name.equals(s)) {
+				if (!s.isEmpty() && name.equals(s)) {
 					return false;
 				}
 			}
 			for (String s : pathFilterString) {
-				if ((dir.getAbsolutePath() + Sync.SLASH + name).contains(s)) {
+				if (!s.isEmpty() && (dir.getAbsolutePath() + Sync.SLASH + name).contains(s)) {
 					return false;
 				}
 			}
 			for (String s : extensionFilterString) {
-				if (name.contains(".") && name.substring(name.lastIndexOf(".") + 1).equalsIgnoreCase(s)) {
+				if (!s.isEmpty() &&name.contains(".") && name.substring(name.lastIndexOf(".") + 1).equalsIgnoreCase(s)) {
 					return false;
 				}
 			}
