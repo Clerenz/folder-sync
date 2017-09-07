@@ -13,18 +13,73 @@ import org.apache.logging.log4j.Logger;
 public class Sync {
 
 	public static final String SLASH = "/";
-
-	private SyncConfig config;
 	public static Logger log = LogManager.getLogger(Sync.class);
+	private static volatile boolean keepGoing = true;
+	
+	private SyncConfig config;
 
 	public Sync(SyncConfig config) {
 		this.config = config;
 	}
 
 	public void sync() {
+		
+		Thread.currentThread().setName("MAIN");
+		
+		ShutdownHook shutdownHook = new ShutdownHook();
+		Runtime.getRuntime().addShutdownHook(shutdownHook);
 
 		for (Target t : config.getTargetList()) {
 
+			Thread thread = new SyncThread(t);
+			shutdownHook.setCurrentThread(thread);
+			thread.start();
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				log.error(e.getMessage(), e);
+			}
+			shutdownHook.setCurrentThread(null);
+		}
+	}
+	
+	
+	private class ShutdownHook extends Thread {
+		
+		private Thread currentThread = null;
+		
+		void setCurrentThread(Thread thread) {
+			this.currentThread = thread;
+		}
+		
+		@Override
+		public void run() {
+			Thread.currentThread().setName("HOOK");
+			keepGoing = false;
+			if (currentThread != null) {
+				log.info("Safely shutting down ...");
+				try {
+					currentThread.join();
+				} catch (InterruptedException e) {
+					log.error(e.getMessage(), e);
+				}
+			}
+		}
+		
+	}
+	
+	
+	private class SyncThread extends Thread {
+
+		private Target t;
+		
+		SyncThread(Target t) {
+			this.t = t;
+		}
+		
+		@Override
+		public void run() {
+			
 			try {
 				t.logPreStart();
 				t.setFilesTotal(countFiles(t.getSourceFile()));
@@ -40,6 +95,10 @@ public class Sync {
 	}
 
 	private void resursiveSync(Target t, String file) throws IOException {
+		
+		if (!keepGoing) {
+			return;
+		}
 
 		File source = new File(t.getSource() + (file.equals("") ? "" : SLASH + file));
 		File target = new File(t.getTarget() + (file.equals("") ? "" : SLASH + file));
