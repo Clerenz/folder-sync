@@ -109,14 +109,21 @@ public class Sync {
 		// Handle directory
 		if (source.isDirectory()) {
 			if (target.exists() && target.isDirectory()) {
-				List<String> sourceChildList = Arrays.asList(source.list(config.getFilenameFilter()));
-				if (config.isRandom()) {
-					Collections.shuffle(sourceChildList);
+				String[] sourceChildArray = source.list(config.getFilenameFilter());
+				if (sourceChildArray != null) {
+					List<String> sourceChildList = Arrays.asList(sourceChildArray);
+					if (config.isRandom()) {
+						Collections.shuffle(sourceChildList);
+					}
+					for (String child : sourceChildList) {
+						resursiveSync(t, file + SLASH + child);
+					}
 				}
-				for (String child : sourceChildList) {
-					resursiveSync(t, file + SLASH + child);
+				String[] targetChildArray = target.list();
+				if (targetChildArray == null) {
+					return;
 				}
-				List<String> targetChildList = Arrays.asList(target.list());
+				List<String> targetChildList = Arrays.asList(targetChildArray);
 				if (config.isRandom()) {
 					Collections.shuffle(targetChildList);
 				}
@@ -193,6 +200,9 @@ public class Sync {
 	private int countFiles(File f) {
 		if (f.isDirectory()) {
 			int c = 0;
+			if (f.listFiles() == null) {
+				return 0;
+			}
 			for (File child : f.listFiles()) {
 				c += countFiles(child);
 			}
