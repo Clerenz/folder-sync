@@ -232,12 +232,14 @@ public class Sync {
 	 * @throws IOException
 	 */
 	public static void copyDirectory(File source, File target, Target t) throws IOException {
-		if (source.isDirectory() && source.list() != null) {
-			target.mkdir();
-			for (File sourceChild : source.listFiles()) {
-				copyDirectory(sourceChild, new File(target, sourceChild.getName()), t);
+		if (source.isDirectory()) {
+			if (source.list() != null) {
+				target.mkdir();
+				for (File sourceChild : source.listFiles()) {
+					copyDirectory(sourceChild, new File(target, sourceChild.getName()), t);
+				}
+				target.setLastModified(source.lastModified());
 			}
-			target.setLastModified(source.lastModified());
 		} else {
 			t.fileAdded();
 			FileUtils.copyFile(source, target);
