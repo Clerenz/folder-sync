@@ -155,10 +155,15 @@ public class Sync {
 		if (source.isFile()) {
 			if (target.exists() && target.isFile()) {
 				if (needsUpdate(source, target)) {
-					log.debug("Replace newer file " + file);
-					t.fileUpdated();
-					target.delete();
-					FileUtils.copyFile(source, target);
+					if(source.canRead()) {
+						log.debug("Replace newer file " + file);
+						t.fileUpdated();
+						target.delete();
+						FileUtils.copyFile(source, target);
+					}
+					else {
+						log.info("Skip replacing locked file " + source.getAbsolutePath());
+					}
 					return;
 				}
 				log.trace("Skipping file " + file);
@@ -170,9 +175,13 @@ public class Sync {
 				t.filesDeleted(countFiles(target));
 				FileUtils.deleteDirectory(target);
 			}
-			log.debug("Copy new file " + file);
-			t.fileAdded();
-			FileUtils.copyFile(source, target);
+			if (source.canRead()) {
+				log.debug("Copy new file " + file);
+				t.fileAdded();
+				FileUtils.copyFile(source, target);
+			} else {
+				log.info("Skip locked file " + source.getAbsolutePath());
+			}
 		}
 	}
 
@@ -241,8 +250,13 @@ public class Sync {
 				target.setLastModified(source.lastModified());
 			}
 		} else {
-			t.fileAdded();
-			FileUtils.copyFile(source, target);
+			if (source.canRead()) {
+				t.fileAdded();
+				FileUtils.copyFile(source, target);
+			}
+			else {
+				log.info("Skip locked file " + source.getAbsolutePath());
+			}
 		}
 	}
 
