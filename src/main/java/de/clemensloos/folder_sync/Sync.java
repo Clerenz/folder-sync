@@ -1,6 +1,7 @@
 package de.clemensloos.folder_sync;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -157,9 +158,13 @@ public class Sync {
 				if (needsUpdate(source, target)) {
 					if(source.canRead()) {
 						log.debug("Replace newer file " + file);
-						t.fileUpdated();
 						target.delete();
-						FileUtils.copyFile(source, target);
+						try {
+							FileUtils.copyFile(source, target);
+							t.fileUpdated();
+						} catch (FileNotFoundException e) {
+							log.info("Skip replacing locked file " + source.getAbsolutePath());
+						}
 					}
 					else {
 						log.info("Skip replacing locked file " + source.getAbsolutePath());
@@ -177,8 +182,12 @@ public class Sync {
 			}
 			if (source.canRead()) {
 				log.debug("Copy new file " + file);
-				t.fileAdded();
-				FileUtils.copyFile(source, target);
+				try {
+					FileUtils.copyFile(source, target);
+					t.fileAdded();
+				} catch (FileNotFoundException e) {
+					log.info("Skip locked file " + source.getAbsolutePath());
+				}
 			} else {
 				log.info("Skip locked file " + source.getAbsolutePath());
 			}
@@ -251,8 +260,12 @@ public class Sync {
 			}
 		} else {
 			if (source.canRead()) {
-				t.fileAdded();
-				FileUtils.copyFile(source, target);
+				try {
+					FileUtils.copyFile(source, target);
+					t.fileAdded();
+				} catch (FileNotFoundException e) {
+					log.info("Skip locked file " + source.getAbsolutePath());
+				}
 			}
 			else {
 				log.info("Skip locked file " + source.getAbsolutePath());
