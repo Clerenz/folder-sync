@@ -133,9 +133,11 @@ public class Sync {
 						log.debug("Delete obsolete file " + file + SLASH + child);
 						if (new File(target, child).isDirectory()) {
 							t.filesDeleted(countFiles(new File(target, child)));
+							// TODO history feature
 							FileUtils.deleteDirectory(new File(target, child));
 						} else {
 							t.fileDeleted();
+							// TODO history feature
 							new File(target, child).delete();
 						}
 					}
@@ -145,6 +147,7 @@ public class Sync {
 			if (target.exists() && !target.isDirectory()) {
 				log.debug("Delete wrong file " + file);
 				t.fileDeleted();
+				// TODO history feature
 				target.delete();
 			}
 			log.debug("Copy new directory " + file);
@@ -158,6 +161,7 @@ public class Sync {
 				if (needsUpdate(source, target)) {
 					if(source.canRead()) {
 						log.debug("Replace newer file " + file);
+						// TODO history feature
 						target.delete();
 						try {
 							FileUtils.copyFile(source, target);
@@ -178,6 +182,7 @@ public class Sync {
 			if (target.exists() && !target.isFile()) {
 				log.debug("Delete wrong folder " + file);
 				t.filesDeleted(countFiles(target));
+				// TODO history feature
 				FileUtils.deleteDirectory(target);
 			}
 			if (source.canRead()) {

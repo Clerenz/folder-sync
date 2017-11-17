@@ -14,6 +14,7 @@ public class SyncConfig {
 	private boolean compareSize = false;
 	private boolean compareChecksum = false;
 	private boolean random = true;
+	private int keepHistory = 0;
 
 	private FilenameFilter filenameFilter;
 
@@ -42,7 +43,15 @@ public class SyncConfig {
 	public void setRandom(boolean random) {
 		this.random = random;
 	}
+	
+	public int getKeepHistory() {
+		return keepHistory;
+	}
 
+	public void setKeepHistory(int keepHistory) {
+		this.keepHistory = keepHistory;
+	}
+	
 	public List<Target> getTargetList() {
 		return targetList;
 	}

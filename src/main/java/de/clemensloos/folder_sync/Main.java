@@ -43,9 +43,11 @@ public class Main {
 		boolean compareSize = Boolean.valueOf(prop.getProperty("compareSize", "false"));
 		boolean compareChecksum = Boolean.valueOf(prop.getProperty("compareChecksum", "false"));
 		boolean random = Boolean.valueOf(prop.getProperty("random", "false"));
+		int keepHistory = Integer.valueOf(prop.getProperty("keepHistory", "0"));
 		config.setCompareChecksum(compareChecksum);
 		config.setCompareSize(compareSize);
 		config.setRandom(random);
+		config.setKeepHistory(keepHistory);
 		String filenameFilter = prop.getProperty("filenameFilter", "");
 		String pathFilter = prop.getProperty("pathFilter", "");
 		String extensionFilter = prop.getProperty("extensionFilter", "");
