@@ -44,10 +44,12 @@ public class Main {
 		boolean compareChecksum = Boolean.valueOf(prop.getProperty("compareChecksum", "false"));
 		boolean random = Boolean.valueOf(prop.getProperty("random", "false"));
 		int keepHistory = Integer.valueOf(prop.getProperty("keepHistory", "0"));
+		boolean interactive = Boolean.valueOf(prop.getProperty("interactive", "true"));
 		config.setCompareChecksum(compareChecksum);
 		config.setCompareSize(compareSize);
 		config.setRandom(random);
 		config.setKeepHistory(keepHistory);
+		config.setInteractive(interactive);
 		String filenameFilter = prop.getProperty("filenameFilter", "");
 		String pathFilter = prop.getProperty("pathFilter", "");
 		String extensionFilter = prop.getProperty("extensionFilter", "");

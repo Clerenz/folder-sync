@@ -15,6 +15,7 @@ public class SyncConfig {
 	private boolean compareChecksum = false;
 	private boolean random = true;
 	private int keepHistory = 0;
+	private boolean interactive = true;
 
 	private FilenameFilter filenameFilter;
 
@@ -50,6 +51,14 @@ public class SyncConfig {
 
 	public void setKeepHistory(int keepHistory) {
 		this.keepHistory = keepHistory;
+	}
+	
+	public boolean isInteractive() {
+		return interactive;
+	}
+	
+	public void setInteractive(boolean interactive) {
+		this.interactive = interactive;
 	}
 	
 	public List<Target> getTargetList() {

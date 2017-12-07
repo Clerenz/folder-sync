@@ -85,10 +85,15 @@ public class Sync {
 		public void run() {
 			
 			try {
-				t.logPreStart();
-				t.setFilesTotal(countFiles(t.getSourceFile()));
-				t.setSizeTotal(sizeOf(t.getSourceFile()));
-				t.logStart();
+				t.logPreStart(config.isInteractive());
+				if (config.isInteractive()) {
+					t.setFilesTotal(countFiles(t.getSourceFile()));
+					t.setSizeTotal(sizeOf(t.getSourceFile()));
+					t.logStart();
+				}
+				else {
+					t.setFilesTotal(-1);
+				}
 				resursiveSync(t, "");
 				t.logEnd();
 
@@ -132,7 +137,7 @@ public class Sync {
 					if (!new File(source, child).exists() || !config.getFilenameFilter().accept(target, child)) {
 						log.debug("Delete obsolete file " + file + SLASH + child);
 						if (new File(target, child).isDirectory()) {
-							t.filesDeleted(countFiles(new File(target, child)));
+							t.filesDeleted(countFiles(new File(target, child)), config.isInteractive());
 							// TODO history feature
 							FileUtils.deleteDirectory(new File(target, child));
 						} else {
@@ -165,7 +170,7 @@ public class Sync {
 						target.delete();
 						try {
 							FileUtils.copyFile(source, target);
-							t.fileUpdated();
+							t.fileUpdated(config.isInteractive());
 						} catch (FileNotFoundException e) {
 							log.info("Skip replacing locked file " + source.getAbsolutePath());
 						}
@@ -176,12 +181,12 @@ public class Sync {
 					return;
 				}
 				log.trace("Skipping file " + file);
-				t.fileOkay();
+				t.fileOkay(config.isInteractive());
 				return;
 			}
 			if (target.exists() && !target.isFile()) {
 				log.debug("Delete wrong folder " + file);
-				t.filesDeleted(countFiles(target));
+				t.filesDeleted(countFiles(target), config.isInteractive());
 				// TODO history feature
 				FileUtils.deleteDirectory(target);
 			}
@@ -189,7 +194,7 @@ public class Sync {
 				log.debug("Copy new file " + file);
 				try {
 					FileUtils.copyFile(source, target);
-					t.fileAdded();
+					t.fileAdded(config.isInteractive());
 				} catch (FileNotFoundException e) {
 					log.info("Skip locked file " + source.getAbsolutePath());
 				}
@@ -254,7 +259,7 @@ public class Sync {
 	 * @param t
 	 * @throws IOException
 	 */
-	public static void copyDirectory(File source, File target, Target t) throws IOException {
+	public void copyDirectory(File source, File target, Target t) throws IOException {
 		if (source.isDirectory()) {
 			if (source.list() != null) {
 				target.mkdir();
@@ -267,7 +272,7 @@ public class Sync {
 			if (source.canRead()) {
 				try {
 					FileUtils.copyFile(source, target);
-					t.fileAdded();
+					t.fileAdded(config.isInteractive());
 				} catch (FileNotFoundException e) {
 					log.info("Skip locked file " + source.getAbsolutePath());
 				}

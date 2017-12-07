@@ -33,28 +33,28 @@ public class Target {
 		verifyTarget();
 	}
 
-	public void fileAdded() {
+	public void fileAdded(boolean interactive) {
 		filesAdded.incrementAndGet();
-		log();
+		log(interactive);
 	}
 
 	public void fileDeleted() {
 		filesDeleted.incrementAndGet();
 	}
 
-	public void filesDeleted(int numberOfFiles) {
+	public void filesDeleted(int numberOfFiles, boolean interactive) {
 		filesDeleted.addAndGet(numberOfFiles);
-		log();
+		log(interactive);
 	}
 
-	public void fileUpdated() {
+	public void fileUpdated(boolean interactive) {
 		filesUpdated.incrementAndGet();
-		log();
+		log(interactive);
 	}
 
-	public void fileOkay() {
+	public void fileOkay(boolean interactive) {
 		filesOkay.incrementAndGet();
-		log();
+		log(interactive);
 	}
 
 	private void verifyTarget() throws SyncException {
@@ -99,10 +99,12 @@ public class Target {
 		this.filesTotal = filesTotal;
 	}
 
-	public void logPreStart() {
+	public void logPreStart(boolean interactive) {
 		Sync.log.info("########################################");
 		Sync.log.info("Processing " + source + " > " + target);
-		Sync.log.info("Counting ...");
+		if (interactive) {
+			Sync.log.info("Counting ...");
+		}
 	}
 
 	public void logStart() {
@@ -117,7 +119,10 @@ public class Target {
 		Sync.log.info("########################################");
 	}
 
-	public void log() {
+	public void log(boolean interactive) {
+		if (!interactive) {
+			return;
+		}
 		System.out.print("  > " + (filesAdded.get() + filesUpdated.get() + filesOkay.get()) + "/" + filesTotal + "\r");
 	}
 
